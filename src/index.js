@@ -17,9 +17,10 @@ const User = require("./resolvers/User");
 const Link = require("./resolvers/Link");
 const Subscription = require("./resolvers/Subscriptions");
 
-const { pubsub } = require("./utils");
+const { PubSub } = require("graphql-subscriptions");
 
 const prisma = new PrismaClient();
+const pubSub = new PubSub();
 
 const resolvers = {
   Query,
@@ -49,6 +50,9 @@ async function startApolloServer(typeDefs, resolvers, prisma, pubSub) {
       schema,
       execute,
       subscribe,
+      onOperation: (message, params, webSocket) => {
+        return { ...params, context: { pubSub } };
+      },
     },
     {
       server: httpServer,
@@ -89,4 +93,4 @@ async function startApolloServer(typeDefs, resolvers, prisma, pubSub) {
   console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
-startApolloServer(typeDefs, resolvers, prisma, pubsub);
+startApolloServer(typeDefs, resolvers, prisma, pubSub);

@@ -1,8 +1,5 @@
 const jwt = require("jsonwebtoken");
 const APP_SECRET = "MyGraphqlSecretKey";
-const { PubSub } = require("graphql-subscriptions");
-
-const pubsub = new PubSub();
 
 function getTokenPayload(token) {
   return jwt.verify(token, APP_SECRET);
@@ -31,5 +28,4 @@ function getUserId(req, authToken) {
 module.exports = {
   APP_SECRET,
   getUserId,
-  pubsub,
 };
